@@ -2,3 +2,8 @@ baseURL = 'https://avig.pages.dev/'
 languageCode = 'en-us'
 title = "Avi Gupta"
 theme = 'xmin'
+
+[[menu.main]]
+name = "Home"
+url = ""
+weight = 1
