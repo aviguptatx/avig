@@ -44,6 +44,7 @@ git push -u origin main
 ```
 
 5. Deploy the GitHub repository via Cloudflare Pages
+
 You will need to create a Cloudflare account. Then, follow [this tutorial](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/) to integrate a Cloudflare Pages deployment with the GitHub repository you created in the previous step. When configuring the deployment, you should have the option to select `Hugo` as your build preset. If not, manually set the build command to `hugo` and the build output directory to `public`.
 
-That's it! Your site should be fully setup, and making changes is as simple as creating new markdown files and pushing to GitHub (Cloudfare Pages will automatically redeploy on any repo changes).
+That's it! Your site should be fully setup, and making changes is as simple as creating new markdown files and pushing to GitHub (Cloudfare Pages will automatically update the site within ~20s of pushing to GitHub).
