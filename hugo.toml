@@ -1,4 +1,4 @@
 baseURL = 'https://avig.pages.dev/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = "Avi Gupta"
 theme = 'xmin'
