@@ -3,6 +3,18 @@ languageCode = 'en-us'
 title = "Avi Gupta"
 theme = 'xmin'
 
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [["$$", "$$"]]
+          inline = [["\\(", "\\)"]]
+
 [[menu.main]]
 name = "Home"
 url = ""

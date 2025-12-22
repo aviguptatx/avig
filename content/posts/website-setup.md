@@ -1,13 +1,11 @@
 +++
 date = '2025-12-12T14:05:41-08:00'
-title = 'Website Setup'
+title = 'Website setup'
 +++
 
 Today I wanted to create a personal website. I wanted a minimal setup that didn't require me to fiddle with any frontend code, which I already do more than enough at my day job. With this setup, creating new posts is as simple as creating markdown files and pushing them to GitHub.
 
 After half an hour of research, I landed on the current setup, which uses [Hugo](https://gohugo.io/), [GitHub](https://github.com/), and [Cloudflare Pages](https://pages.cloudflare.com/)[^1]. 
-
-[^1]: I chose Cloudflare Pages as I already use it to deploy my [crossword leaderboard](https://crosselo.avigupta.workers.dev/), and I like that it provides clean domain names (`*.pages.dev`) for free.
 
 I was able to get this setup working in about 20 minutes on macOS. Note that these instructions are largely adapted from Cloudflare's [tutorial](https://developers.cloudflare.com/pages/framework-guides/deploy-a-hugo-site/) on deploying a Hugo site, with some modifications (using a different theme, adding a `.gitignore`, etc).
 
@@ -51,3 +49,5 @@ I was able to get this setup working in about 20 minutes on macOS. Note that the
     Follow [this tutorial](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/) to integrate a Cloudflare Pages deployment with the GitHub repository you created in the previous step. When configuring the deployment, you should have the option to select `Hugo` as your build preset. If not, manually set the build command to `hugo` and the build output directory to `/public`.
 
 That's it! Making changes is as simple as creating new markdown files and pushing to GitHub -- Cloudfare Pages will automatically update the site within ~20s of pushing to GitHub.
+
+[^1]: I chose Cloudflare Pages as I already use it to deploy my [crossword leaderboard](https://crosselo.avigupta.workers.dev/), and I like that it provides clean domain names (`*.pages.dev`) for free.
