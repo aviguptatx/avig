@@ -91,7 +91,7 @@ P_{\text{tie}}(N, m, r) \approx
 \right)
 $$
 
-Finally, we have to multiply by a factor of 0.5[^3] to account for tiebreaker mechanics, which we must factor in for both even and odd \\(N\\):
+Finally, we have to multiply by a factor of 0.5 to account for tiebreaker mechanics[^3], which we must factor in for both even and odd \\(N\\):
 
 $$
 P_{\text{vote flips state}}(N, m, r) \approx
@@ -104,7 +104,7 @@ $$
 
 #### Observations
 - Fairly intuitively, your vote's impact is inversely proportional to \\(N\\).
-- In a true toss-up, the exponential term becomes \\(e^0 = 1\\), and \\(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\\)
+- In a true toss-up (\\(m=0\\)), the exponential term becomes \\(e^0 = 1\\), and \\(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\\)
 
 ### Factoring in your state's decisiveness
 
@@ -121,7 +121,7 @@ Computing this would require checking all possible combinations of state outcome
 Repeating this millions of times gives us a stable estimate of each state's structural power in the Electoral College.
 
 ### Limitations
-Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are highly correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. If Pennsylvania's polls underestimate your candidate by 3 points, Wisconsin and Michigan probably do too. This correlation has two effects, neither or which we account for:
+Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are highly correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. If Pennsylvania's polls underestimate your candidate by 3 points, Wisconsin and Michigan probably do too. This correlation has two effects, neither of which we account for:
   1. Swing states tend to tip together, making the "tipping point state" more predictable than our model suggests
   2. Conditional on the election being close nationally, it's more likely to be close in multiple swing states simultaneously
 
@@ -131,7 +131,7 @@ A better approach would be to model state outcomes as draws from a multivariate 
 The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates. You can think of this as the value of the donation you get to make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we cannot put a price tag on. That being said, we are after an order-of-magnitude estimate, so let the hand waving begin.
 
 ### The federal budget as a proxy
-The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we really care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B. The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Together with the difference in discretionary spending, we can estimate:
+The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we really care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B. The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the impact of these over 4 years at $280B, bringing our total to:
 $$\Delta V \approx 1T$$
 
 ### Confidence factor
@@ -223,14 +223,14 @@ To put this into perspective, suppose you live in Idaho (where your vote is wort
 ### Vote swap
 In the current equilibrium of the U.S., due to the two party system, there are only two candidates ever "worth" voting for if you think in terms of expected value. That being said, there are still some people who vote for independent candidates, knowing damn well it is 0 EV but presumably to "rage against the dying of the light" (as my friend put it), among other reasons.
 
-This opens to the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swapping). If Dave the Democrat lives in a decided state (e.g. DC) and has a third-party friend Trent who lives in a swing state (who prefers Democrat to Republican), a swap can be arranged, where Trent votes Democrat and Dave votes third-party, and both people are happier. This is legal in the U.S., but of course requires trust to function.
+This opens the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swapping). If Dave the Democrat lives in a decided state (e.g. DC) and has a third-party friend Trent who lives in a swing state (who prefers Democrat to Republican), a swap can be arranged, where Trent votes Democrat and Dave votes third-party, and both people are happier. This is legal in the U.S., but of course requires trust to function.
 
 ### Ignore the numbers
 This analysis treats voting as a means to an end in order to achieve some dollar amount of societal benefit. But there are still many reasons to vote -- self-expression, upholding civic duty, and enacting a forcing function on oneself to become more polictically informed and active -- all good things.
 
 [^1]: [This](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) 3Blue1Brown video is a good explainer on the Central Limit Theorem.
 [^2]: If \\(r=0\\), we simply have 100% probability if \\(m=0\\) and 0% probability otherwise.
-[^3]: For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\).
+[^3]: Assume the tiebreaker is a coin toss. For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\). Thus in either case, your vote only changes the outcome half the time.
 [^4]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
 [^5]: There are plently of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
 [^6]: [Source code](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py).

@@ -297,14 +297,7 @@ def create_map(results):
             [0.9, '#238b45'],
             [1, '#1a7838']
         ],
-        colorbar=dict(
-            title="EV ($)",
-            thickness=20,
-            len=0.6,
-            y=0.5,
-            yanchor='middle',
-            tickformat='$,.0f'
-        ),
+        showscale=False,
         marker=dict(
             line=dict(
                 color='white',
@@ -343,10 +336,10 @@ def create_map(results):
             showframe=False
         ),
         height=400,
-        margin=dict(t=0, b=0, l=0, r=60),
+        margin=dict(t=0, b=0, l=0, r=0),
         paper_bgcolor='white',
         plot_bgcolor='white',
-        dragmode=False,
+        dragmode='zoom',
         showlegend=False
     )
 
@@ -354,7 +347,7 @@ def create_map(results):
 
 
 if __name__ == "__main__":
-    banzhaf_results = simulate_banzhaf(10_000_000)
+    banzhaf_results = simulate_banzhaf(100_000)
     
     results = []
     for state in ELECTORAL_VOTES:
@@ -393,9 +386,8 @@ if __name__ == "__main__":
     fig.write_html(
         "voting_map.html",
         config={
-            "scrollZoom": False,
+            "scrollZoom": True,
             "displayModeBar": False,
-            "doubleClick": False,
-            "staticPlot": False
+            "doubleClick": "reset"
         }
     )
