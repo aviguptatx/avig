@@ -335,11 +335,11 @@ def create_map(results):
             showcoastlines=False,
             showframe=False
         ),
-        height=400,
+        height=300,
         margin=dict(t=0, b=0, l=0, r=0),
         paper_bgcolor='white',
         plot_bgcolor='white',
-        dragmode='zoom',
+        dragmode=False,
         showlegend=False
     )
 
@@ -347,7 +347,7 @@ def create_map(results):
 
 
 if __name__ == "__main__":
-    banzhaf_results = simulate_banzhaf(100_000)
+    banzhaf_results = simulate_banzhaf(10_000_000)
     
     results = []
     for state in ELECTORAL_VOTES:
@@ -386,8 +386,9 @@ if __name__ == "__main__":
     fig.write_html(
         "voting_map.html",
         config={
-            "scrollZoom": True,
+            "scrollZoom": False,
             "displayModeBar": False,
-            "doubleClick": "reset"
+            "doubleClick": False,
+            "staticPlot": True
         }
     )

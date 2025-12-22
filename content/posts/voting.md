@@ -1,16 +1,16 @@
 +++
 date = '2025-12-12T14:05:41-08:00'
-title = 'The value of voting'
+title = 'The value of voting in the U.S.'
 +++
 
-# How much is your presidential vote worth in the United States?
+# Formulation
 The expected value of your vote depends on two things: the probability your vote changes the outcome of the entire election, and the value that is gained from this change in outcome. Mathematically, we have:
 
 $$EV = P(\text{vote flips state}) \times P(\text{state flips election}) \times \Delta V$$
 
 where \\(\Delta V\\) is the value difference between your preferred candidate winning versus losing. We'll build up each component in turn.
 
-## Probability a single vote matters
+## P(vote flips state)
 ### Normal distribution as an approximator
 
 When we aggregate many polls, each poll is sampling from the same underlying population of voters. The Central Limit Theorem[^1] tells us that the average of these poll results will be approximately normally distributed, regardless of the underlying distribution of voter preferences.
@@ -106,11 +106,7 @@ $$
 - Fairly intuitively, your vote's impact is inversely proportional to \\(N\\).
 - In a true toss-up (\\(m=0\\)), the exponential term becomes \\(e^0 = 1\\), and \\(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\\)
 
-### Factoring in your state's decisiveness
-
-Even if your vote decides your state, your state's electoral votes must also decide the presidential election for your vote to be truly decisive. We still need to estimate \\(P(\text{state flips election})\\).
-
-#### Banzhaf power index
+## P(state flips election)
 The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) is meant to estimate the probability a voter (or voting bloc) is pivotal in a weighted voting system. The calculation enumerates all winning coalitions, then counts the proportion in which flipping the bloc's vote changes the outcome.
 
 Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. Instead, we'll estimate via Monte Carlo simulation:
@@ -120,7 +116,7 @@ Computing this would require checking all possible combinations of state outcome
 
 Repeating this millions of times gives us a stable estimate of each state's structural power in the Electoral College.
 
-### Limitations
+## Limitations
 Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are highly correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. If Pennsylvania's polls underestimate your candidate by 3 points, Wisconsin and Michigan probably do too. This correlation has two effects, neither of which we account for:
   1. Swing states tend to tip together, making the "tipping point state" more predictable than our model suggests
   2. Conditional on the election being close nationally, it's more likely to be close in multiple swing states simultaneously
@@ -131,7 +127,9 @@ A better approach would be to model state outcomes as draws from a multivariate 
 The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates. You can think of this as the value of the donation you get to make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we cannot put a price tag on. That being said, we are after an order-of-magnitude estimate, so let the hand waving begin.
 
 ### The federal budget as a proxy
-The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we really care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B. The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the impact of these over 4 years at $280B, bringing our total to:
+The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we really care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
+
+The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the impact of these over 4 years at $280B, bringing our total to:
 $$\Delta V \approx 1T$$
 
 ### Confidence factor
@@ -139,74 +137,74 @@ Since most voters (including myself) are not 100% confident in their vote, we sh
 $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
-Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 10 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are some sample results:
+Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 10 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are the results:
+
+<iframe
+  src="/plots/voting_map.html"
+  width="100%"
+  height="320"
+  frameborder="0">
+</iframe>
+
 <div class="table-wrapper">
 <table>
 
 | State | P(vote flips state) | P(state flips election) | EV |
 |-------|--------------------:|------------------------:|---:|
-| AK | 8.50e-06 | 2.27% | $96,250 |
-| AR | 3.31e-06 | 4.53% | $75,132 |
-| NM | 3.59e-06 | 3.79% | $67,999 |
-| NH | 4.23e-06 | 3.03% | $64,100 |
-| NV | 2.68e-06 | 4.54% | $60,750 |
-| KS | 2.62e-06 | 4.53% | $59,351 |
-| ME | 3.27e-06 | 3.02% | $49,383 |
-| IA | 2.13e-06 | 4.54% | $48,412 |
-| AZ | 1.15e-06 | 8.35% | $47,873 |
-| GA | 7.48e-07 | 12.19% | $45,572 |
-| WI | 1.15e-06 | 7.59% | $43,766 |
-| RI | 2.86e-06 | 3.03% | $43,298 |
-| TX | 2.66e-07 | 31.73% | $42,226 |
-| NC | 6.91e-07 | 12.19% | $42,122 |
-| PA | 5.64e-07 | 14.52% | $40,928 |
-| MI | 6.88e-07 | 11.42% | $39,275 |
-| MN | 1.01e-06 | 7.59% | $38,157 |
-| VA | 7.43e-07 | 9.89% | $36,728 |
-| FL | 2.99e-07 | 23.29% | $34,841 |
-| OH | 5.07e-07 | 12.96% | $32,840 |
-| IL | 4.24e-07 | 14.51% | $30,772 |
-| CO | 7.47e-07 | 7.58% | $28,279 |
-| SC | 7.84e-07 | 6.82% | $26,746 |
-| OR | 8.41e-07 | 6.06% | $25,483 |
-| NE | 1.34e-06 | 3.77% | $25,326 |
-| MT | 1.29e-06 | 3.02% | $19,458 |
-| OK | 7.04e-07 | 5.29% | $18,638 |
-| CT | 6.20e-07 | 5.30% | $16,426 |
-| MO | 4.32e-07 | 7.58% | $16,361 |
-| DE | 1.39e-06 | 2.27% | $15,757 |
-| IN | 3.44e-07 | 8.34% | $14,323 |
-| NJ | 2.41e-07 | 10.65% | $12,803 |
-| NY | 1.01e-07 | 21.65% | $10,950 |
-| HI | 5.42e-07 | 3.02% | $8,190 |
-| WA | 1.56e-07 | 9.11% | $7,123 |
-| MS | 2.84e-07 | 4.53% | $6,433 |
-| TN | 1.43e-07 | 8.34% | $5,957 |
-| LA | 1.76e-07 | 6.06% | $5,319 |
-| ND | 2.80e-07 | 2.26% | $3,171 |
-| SD | 2.73e-07 | 2.27% | $3,098 |
-| CA | 1.14e-08 | 46.08% | $2,630 |
-| UT | 1.01e-07 | 4.54% | $2,297 |
-| WV | 1.35e-07 | 3.02% | $2,039 |
-| MD | 3.22e-08 | 7.58% | $1,222 |
-| MA | 2.45e-08 | 8.34% | $1,022 |
+| AK | 8.50e-06 | 2.27% | $96,489 |
+| AR | 3.31e-06 | 4.54% | $75,267 |
+| NM | 3.59e-06 | 3.79% | $67,966 |
+| NH | 4.23e-06 | 3.02% | $64,038 |
+| NV | 2.68e-06 | 4.55% | $60,892 |
+| KS | 2.62e-06 | 4.54% | $59,413 |
+| ME | 3.27e-06 | 3.03% | $49,518 |
+| IA | 2.13e-06 | 4.54% | $48,388 |
+| AZ | 1.15e-06 | 8.35% | $47,900 |
+| GA | 7.48e-07 | 12.18% | $45,553 |
+| WI | 1.15e-06 | 7.58% | $43,702 |
+| RI | 2.86e-06 | 3.03% | $43,330 |
+| TX | 2.66e-07 | 31.75% | $42,251 |
+| NC | 6.91e-07 | 12.18% | $42,076 |
+| PA | 5.64e-07 | 14.52% | $40,925 |
+| MI | 6.88e-07 | 11.40% | $39,221 |
+| MN | 1.01e-06 | 7.58% | $38,121 |
+| VA | 7.43e-07 | 9.87% | $36,673 |
+| FL | 2.99e-07 | 23.30% | $34,849 |
+| OH | 5.07e-07 | 12.96% | $32,837 |
+| IL | 4.24e-07 | 14.51% | $30,773 |
+| CO | 7.47e-07 | 7.58% | $28,303 |
+| SC | 7.84e-07 | 6.83% | $26,773 |
+| OR | 8.41e-07 | 6.06% | $25,474 |
+| NE | 1.34e-06 | 3.78% | $25,352 |
+| MT | 1.29e-06 | 3.02% | $19,493 |
+| OK | 7.04e-07 | 5.29% | $18,641 |
+| CT | 6.20e-07 | 5.30% | $16,415 |
+| MO | 4.32e-07 | 7.59% | $16,388 |
+| DE | 1.39e-06 | 2.27% | $15,793 |
+| IN | 3.44e-07 | 8.36% | $14,363 |
+| NJ | 2.41e-07 | 10.64% | $12,794 |
+| NY | 1.01e-07 | 21.67% | $10,962 |
+| HI | 5.42e-07 | 3.02% | $8,195 |
+| WA | 1.56e-07 | 9.11% | $7,120 |
+| MS | 2.84e-07 | 4.54% | $6,442 |
+| TN | 1.43e-07 | 8.35% | $5,959 |
+| LA | 1.76e-07 | 6.05% | $5,309 |
+| ND | 2.80e-07 | 2.26% | $3,173 |
+| SD | 2.73e-07 | 2.26% | $3,087 |
+| CA | 1.14e-08 | 46.04% | $2,628 |
+| UT | 1.01e-07 | 4.54% | $2,299 |
+| WV | 1.35e-07 | 3.02% | $2,045 |
+| MD | 3.22e-08 | 7.58% | $1,221 |
+| MA | 2.45e-08 | 8.34% | $1,021 |
 | VT | 6.39e-08 | 2.27% | $725 |
-| AL | 1.95e-08 | 6.81% | $665 |
-| KY | 2.12e-08 | 6.06% | $642 |
+| AL | 1.95e-08 | 6.82% | $666 |
+| KY | 2.12e-08 | 6.06% | $641 |
 | WY | 8.89e-09 | 2.27% | $101 |
-| ID | 5.56e-09 | 3.02% | $84 |
-| DC | 1.33e-20 | 2.27% | $0 |
+| ID | 5.56e-09 | 3.03% | $84 |
+| DC | 1.33e-20 | 2.28% | $0 |
 
 </table>
 </div>
-
-And a graph of these:
-<iframe
-  src="/plots/voting_map.html"
-  width="100%"
-  height="420"
-  frameborder="0">
-</iframe>
 
 # Analysis
 ## Voting EV
