@@ -154,7 +154,7 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
 | ID | 917,469 | 36.5% | 5.56e-09 | 3.02% | 1.68e-10 | $84 |
 | DC | 328,871 | 83.0% | 1.33e-20 | 2.27% | 3.02e-22 | $0 |
 
-And a graph of these (hover over states to see details):
+And a graph of these (hover over states to see details, or on mobile, click):
 <iframe
   src="/plots/voting_map.html"
   width="100%"
