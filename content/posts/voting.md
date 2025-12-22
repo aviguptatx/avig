@@ -231,4 +231,4 @@ This analysis treats voting as a means to an end in order to achieve some dollar
 [^3]: Assume the tiebreaker is a coin toss. For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\). Thus in either case, your vote only changes the outcome half the time.
 [^4]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
 [^5]: There are plently of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
-[^6]: [Source code](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py).
+[^6]: Source code [here](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py). You can run the code with your own parameters and get a table and annotated map like the ones in this post.
