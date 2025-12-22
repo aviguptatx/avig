@@ -1,10 +1,10 @@
 +++
 date = '2025-12-12T14:05:41-08:00'
-title = 'Voting in the presidential election'
+title = 'The value of voting'
 +++
 
-# EV of a presidential vote
-How much is your presidential vote worth in the United States? The expected value of your vote depends on two things: the probability your vote changes the outcome of the entire election, and the value that is gained from this change in outcome. Mathematically, we have:
+# How much is your presidential vote worth in the United States?
+The expected value of your vote depends on two things: the probability your vote changes the outcome of the entire election, and the value that is gained from this change in outcome. Mathematically, we have:
 
 $$EV = P(\text{vote flips state}) \times P(\text{state flips election}) \times \Delta V$$
 
@@ -51,7 +51,7 @@ This evaluates to 0.0797, or about an 8% chance of a tie in Splitville.
 Now let's generalize. Define:
 - \\(N\\) = number of voters (excluding you)
 - \\(m\\) = polling margin as a fraction (e.g., a 55%–45% lead means \\(m = 0.10\\))
-- \\(r\\) = polling error as a fraction of voters
+- \\(r\\) = polling error as a fraction of voters, \\(r \neq 0\\)[^2]
 
 Your candidate's expected vote count is \\(N \cdot (0.5 + m/2)\\), and the standard deviation is \\(rN\\). A tie occurs at \\(N/2\\) votes for each candidate.
 
@@ -91,13 +91,7 @@ P_{\text{tie}}(N, m, r) \approx
 \right)
 $$
 
-We still have one last wrinkle to iron out. Our formula assumes an even number of other voters, where your vote can break an exact tie. But if there's an odd number of other voters, no exact tie is possible -- instead, your vote matters only if your candidate is losing by exactly one vote and wins the resulting tiebreaker (assume a coin flip).
-
-Let \\(p\\) be the probability density at the tie point. In both cases, we need to account for tiebreaker mechanics (assume a coin flip):
-- Even \\(N\\): A tie occurs with probability \\(p\\). Without your vote, you candidate wins the tiebreaker with probability \\(0.5\\).
-- Odd \\(N\\): Your candidate trails by exactly one vote with probability \\(p\\). Without your vote, they lose. With your vote, it's a tie, and they need to win the tiebreaker with probability \\(0.5\\).
-
-In either case, the probability of your vote flipping the state election is \\(0.5p\\). Thus:
+Finally, we have to multiply by a factor of 0.5[^3] to account for tiebreaker mechanics, which we must factor in for both even and odd \\(N\\):
 
 $$
 P_{\text{vote flips state}}(N, m, r) \approx
@@ -119,7 +113,7 @@ Even if your vote decides your state, your state's electoral votes must also dec
 #### Banzhaf power index
 The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) is meant to estimate the probability a voter (or voting bloc) is pivotal in a weighted voting system. The calculation enumerates all winning coalitions, then counts the proportion in which flipping the bloc's vote changes the outcome.
 
-Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^2] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. Instead, we'll estimate via Monte Carlo simulation:
+Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. Instead, we'll estimate via Monte Carlo simulation:
   1. For each state except yours, flip a fair coin to determine the winner
   2. Sum up your candidate's electoral votes from those other states
   3. Check if your state is pivotal: does adding its electoral votes swing the election?
@@ -141,20 +135,72 @@ The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and 
 $$\Delta V \approx 1T$$
 
 ### Confidence factor
-Since most voters (including myself) are not 100% confident in their vote, we should also apply a confidence discount factor. Even if you are very confident in your vote, policies can have second-order effects that are hard to predict [^3], so you should still discount this number. Applying a moderate \\(c=0.5\\) gives us:
+Since most voters (including myself) are not 100% confident in their vote, we should also apply a confidence discount factor. Even if you are very confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \\(c=0.5\\) gives us:
 $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
-Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 100 million simulations[^4] to estimate \\(P(\text{state flips election})\\) for each state. Here are some sample results:
-| State | Voters | Margin | P(vote flips state) | P(state flips election) | P(vote decisive) | EV |
-|-------|-------:|-------:|---------------------:|------------------:|-----------------:|---------------:|
-| AK | 340,981 | 8.0% | 8.50e-06 | 2.27% | 1.93e-07 | $96,579 |
-| AR | 1,190,172 | 1.5% | 3.31e-06 | 4.54% | 1.50e-07 | $75,192 |
-| ... | ... | ... | ...| ... | ... | ... |
-| ID | 917,469 | 36.5% | 5.56e-09 | 3.02% | 1.68e-10 | $84 |
-| DC | 328,871 | 83.0% | 1.33e-20 | 2.27% | 3.02e-22 | $0 |
+Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 10 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are some sample results:
+<div class="table-wrapper">
+<table>
 
-And a graph of these (hover over states to see details, or on mobile, click):
+| State | P(vote flips state) | P(state flips election) | EV |
+|-------|--------------------:|------------------------:|---:|
+| AK | 8.50e-06 | 2.27% | $96,250 |
+| AR | 3.31e-06 | 4.53% | $75,132 |
+| NM | 3.59e-06 | 3.79% | $67,999 |
+| NH | 4.23e-06 | 3.03% | $64,100 |
+| NV | 2.68e-06 | 4.54% | $60,750 |
+| KS | 2.62e-06 | 4.53% | $59,351 |
+| ME | 3.27e-06 | 3.02% | $49,383 |
+| IA | 2.13e-06 | 4.54% | $48,412 |
+| AZ | 1.15e-06 | 8.35% | $47,873 |
+| GA | 7.48e-07 | 12.19% | $45,572 |
+| WI | 1.15e-06 | 7.59% | $43,766 |
+| RI | 2.86e-06 | 3.03% | $43,298 |
+| TX | 2.66e-07 | 31.73% | $42,226 |
+| NC | 6.91e-07 | 12.19% | $42,122 |
+| PA | 5.64e-07 | 14.52% | $40,928 |
+| MI | 6.88e-07 | 11.42% | $39,275 |
+| MN | 1.01e-06 | 7.59% | $38,157 |
+| VA | 7.43e-07 | 9.89% | $36,728 |
+| FL | 2.99e-07 | 23.29% | $34,841 |
+| OH | 5.07e-07 | 12.96% | $32,840 |
+| IL | 4.24e-07 | 14.51% | $30,772 |
+| CO | 7.47e-07 | 7.58% | $28,279 |
+| SC | 7.84e-07 | 6.82% | $26,746 |
+| OR | 8.41e-07 | 6.06% | $25,483 |
+| NE | 1.34e-06 | 3.77% | $25,326 |
+| MT | 1.29e-06 | 3.02% | $19,458 |
+| OK | 7.04e-07 | 5.29% | $18,638 |
+| CT | 6.20e-07 | 5.30% | $16,426 |
+| MO | 4.32e-07 | 7.58% | $16,361 |
+| DE | 1.39e-06 | 2.27% | $15,757 |
+| IN | 3.44e-07 | 8.34% | $14,323 |
+| NJ | 2.41e-07 | 10.65% | $12,803 |
+| NY | 1.01e-07 | 21.65% | $10,950 |
+| HI | 5.42e-07 | 3.02% | $8,190 |
+| WA | 1.56e-07 | 9.11% | $7,123 |
+| MS | 2.84e-07 | 4.53% | $6,433 |
+| TN | 1.43e-07 | 8.34% | $5,957 |
+| LA | 1.76e-07 | 6.06% | $5,319 |
+| ND | 2.80e-07 | 2.26% | $3,171 |
+| SD | 2.73e-07 | 2.27% | $3,098 |
+| CA | 1.14e-08 | 46.08% | $2,630 |
+| UT | 1.01e-07 | 4.54% | $2,297 |
+| WV | 1.35e-07 | 3.02% | $2,039 |
+| MD | 3.22e-08 | 7.58% | $1,222 |
+| MA | 2.45e-08 | 8.34% | $1,022 |
+| VT | 6.39e-08 | 2.27% | $725 |
+| AL | 1.95e-08 | 6.81% | $665 |
+| KY | 2.12e-08 | 6.06% | $642 |
+| WY | 8.89e-09 | 2.27% | $101 |
+| ID | 5.56e-09 | 3.02% | $84 |
+| DC | 1.33e-20 | 2.27% | $0 |
+
+</table>
+</div>
+
+And a graph of these:
 <iframe
   src="/plots/voting_map.html"
   width="100%"
@@ -168,7 +214,7 @@ The EV of a vote ranges from $84 (Idaho) to $97k (Alaska). A vote in Alaska is ~
 
 Oh, and then there is DC, where a voter has an astronomically small \\(3.02\times 10^{-22}\\) chance of swinging an election. Put another way, if a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
 
-## What can I do in $INSERT_NONSWING_STATE?
+## What can I do in $NONSWING_STATE?
 
 ### Political activism
 Convincing an undecided person to vote for your preferred candidate in Alaska has an EV of $97k.
@@ -182,7 +228,9 @@ This opens to the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swa
 ### Ignore the numbers
 This analysis treats voting as a means to an end in order to achieve some dollar amount of societal benefit. But there are still many reasons to vote -- self-expression, upholding civic duty, and enacting a forcing function on oneself to become more polictically informed and active -- all good things.
 
-[^1]: [This 3Blue1Brown video](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) is a good explainer on the Central Limit Theorem.
-[^2]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
-[^3]: There are plently of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
-[^4]: [Source code](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py).
+[^1]: [This](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) 3Blue1Brown video is a good explainer on the Central Limit Theorem.
+[^2]: If \\(r=0\\), we simply have 100% probability if \\(m=0\\) and 0% probability otherwise.
+[^3]: For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\).
+[^4]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
+[^5]: There are plently of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
+[^6]: [Source code](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py).
