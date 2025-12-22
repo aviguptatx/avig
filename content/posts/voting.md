@@ -114,14 +114,14 @@ Computing this would require checking all possible combinations of state outcome
   2. Sum up your candidate's electoral votes from those other states
   3. Check if your state is pivotal: does adding its electoral votes swing the election?
 
-Repeating this millions of times gives us a stable estimate of each state's structural power in the Electoral College.
+Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
 
 ## Limitations
 Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are highly correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. If Pennsylvania's polls underestimate your candidate by 3 points, Wisconsin and Michigan probably do too. This correlation has two effects, neither of which we account for:
   1. Swing states tend to tip together, making the "tipping point state" more predictable than our model suggests
   2. Conditional on the election being close nationally, it's more likely to be close in multiple swing states simultaneously
 
-A better approach would be to model state outcomes as draws from a multivariate normal distribution with correlations estimated from historical polling errors.
+A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors.
 
 ## Value of the election
 The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates. You can think of this as the value of the donation you get to make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we cannot put a price tag on. That being said, we are after an order-of-magnitude estimate, so let the hand waving begin.
