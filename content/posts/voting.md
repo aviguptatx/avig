@@ -3,6 +3,10 @@ date = '2025-12-12T14:05:41-08:00'
 title = 'The value of voting in the U.S.'
 +++
 
+I like to think I'm principled in my approach to life. I don't play the lottery. I buy the cheapest apartment insurance possible. I've run the numbers. 
+
+But every four years, I show up to vote in federal elections despite being convinced that it is useless. Why? I finally decided to put an end to this hypocrisy and do the math. I expected it to confirm my beliefs, that federal elections aren't worth my time. I was wrong.
+
 # Formulation
 The expected value of your vote depends on two things: the probability your vote changes the outcome of the entire election, and the value that is gained from this change in outcome. Mathematically, we have:
 
@@ -127,13 +131,13 @@ A better approach would be to model state outcomes as draws from a multivariate 
 The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates. You can think of this as the value of the donation you get to make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we cannot put a price tag on. That being said, we are after an order-of-magnitude estimate, so let the hand waving begin.
 
 ### The federal budget as a proxy
-The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we really care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
+The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president cannot really influence the former, and influencing the latter requires legislation. Thus to start our order-of-magnitude estimate, let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
 
 The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the impact of these over 4 years at $280B, bringing our total to:
 $$\Delta V \approx 1T$$
 
 ### Confidence factor
-Since most voters (including myself) are not 100% confident in their vote, we should also apply a confidence discount factor. Even if you are very confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \\(c=0.5\\) gives us:
+Since most voters (including myself) are not 100% confident in their vote, we should also apply a confidence discount factor. Even if you feel 100% confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \\(c=0.5\\) gives us:
 $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
@@ -210,7 +214,7 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
 ## Voting EV
 The EV of a vote ranges from $84 (Idaho) to $97k (Alaska). A vote in Alaska is ~1000 times more valuable than a vote in Idaho (regardless of the value one assigns to the election itself). The chance of a vote swinging the entire election ranges from ~1 in 6 billion in Idaho to ~1 in 5 million in Alaska.
 
-Oh, and then there is DC, where a voter has an astronomically small \\(3.02\times 10^{-22}\\) chance of swinging an election. Put another way, if a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
+Oh, and then there is DC, where a voter has an astronomically small \\(3.02\times 10^{-22}\\) chance of swinging an election. If a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
 
 ## What can I do in $NONSWING_STATE?
 
