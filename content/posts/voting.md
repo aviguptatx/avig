@@ -1,5 +1,5 @@
 +++
-date = '2025-12-12T14:05:41-08:00'
+date = '2025-12-22T14:05:41-08:00'
 title = 'The value of voting in the U.S.'
 +++
 
@@ -229,13 +229,17 @@ In the current equilibrium of the U.S., due to the two party system, there are o
 
 This opens the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swapping). If Dave the Democrat lives in a decided state (e.g. DC) and has a third-party friend Trent who lives in a swing state (who prefers Democrat to Republican), a swap can be arranged, where Trent votes Democrat and Dave votes third-party, and both people are happier. This is legal in the U.S., but of course requires trust to function.
 
-# Epilogue
+# Conclusion
 
-This entire analysis is an elaborate rationalization for something I was going to do anyway. But now when someone claims my vote is worthless, or that the Electoral College is a good thing, I can pull out probability density functions and Banzhaf simulations and end the conversation immediately. Not because I've won, but because literally no one cares.
+This entire analysis is an elaborate rationalization for something I was probably going to do anyway. And it treats voting as a means to an end, a pure mathematical decision.
+
+There are plenty of reasons to ignore the numbers and vote: self-expression, civic duty, or simply using Election Day as a forcing function to stay politically informed. All valid.
+
+But now when someone claims my vote is worthless, or that the Electoral College is a good thing, I can pull out probability density functions and Banzhaf simulations and end the conversation immediately. Not because I've won, but because literally no one cares.
 
 [^1]: [This](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) 3Blue1Brown video is a good explainer on the Central Limit Theorem.
 [^2]: If \\(r=0\\), we simply have 100% probability if \\(m=0\\) and 0% probability otherwise.
 [^3]: Assume the tiebreaker is a coin toss. For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\). Thus in either case, your vote only changes the outcome half the time.
 [^4]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
-[^5]: There are plently of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
+[^5]: There are plenty of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
 [^6]: Source code [here](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py). You can run the code with your own parameters and get a table and annotated map like the ones in this post.
