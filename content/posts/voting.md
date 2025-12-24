@@ -113,24 +113,32 @@ $$
 - In a true toss-up (\\(m=0\\)), the exponential term becomes \\(e^0 = 1\\), and \\(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\\)
 
 ## P(state flips election)
-The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) is meant to estimate the probability a voter (or voting bloc) is pivotal in a weighted voting system. The calculation enumerates all possible voter coalitions, then counts the proportion of these in which flipping the bloc's vote changes the outcome.
+We now know the probability of a vote flipping your state, but we still need to determine the probability that this event flips the entire election result.
 
-Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. Instead, we'll estimate via Monte Carlo simulation:
-  1. For each state except yours, flip a fair coin to determine the winner
-  2. Sum up your candidate's electoral votes from those other states
-  3. Check if your state is pivotal: does adding its electoral votes swing the election?
+The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) measures exactly this: the probability that a voting bloc is pivotal in a weighted voting system. The calculation enumerates all possible voter coalitions, then counts the proportion of these in which flipping the bloc's vote changes the outcome.
 
-Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
+Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. 
+
+### Monte Carlo simulation
+Instead, we'll estimate via Monte Carlo simulation. The algorithm:
+1. Generate a randomized election: for each state, flip a fair coin to determine the winner
+2. Sum electoral votes for candidate A, call this \(E_A\)
+3. Check pivotality for each state \(s\): 
+   - If candidate A won state \(s\): Is \(E_A \geq 270\) but \(E_A - \text{EV}_s < 270\)?
+   - If candidate A lost state \(s\): Is \(E_A < 270\) but \(E_A + \text{EV}_s \geq 270\)?
+   - If either condition holds, state \(s\) is pivotal in this simulation
+
+For each state, \\(P(\text{state flips election}) = (\text{number of times pivotal}) / (\text{total simulations})\\). Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
 
 ## Limitations
-Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are highly correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. If Pennsylvania's polls underestimate your candidate by 3 points, Wisconsin and Michigan probably do too. This correlation has two effects, neither of which we account for:
+Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. In 2024, the seven main swing states (PA, MI, WI, GA, NC, AZ, NV) all moved in the same direction. This correlation has two effects, neither of which we account for:
   1. Swing states tend to tip together, making the "tipping point state" more predictable than our model suggests
   2. Conditional on the election being close nationally, it's more likely to be close in multiple swing states simultaneously
 
-A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors.
+A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors, but we leave this as an exercise to the reader :)
 
 ## Value of the election
-The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates -- the value of the "donation" you make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand waving begin.
+The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates -- the value of the "donation" you make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
 
 ### The federal budget as a proxy
 The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president can't influence the former, and influencing the latter requires legislation. So let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
@@ -143,7 +151,7 @@ Since most voters aren't 100% confident in their vote, we should also apply a co
 $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
-Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 10 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are the results:
+Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 100 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are the results:
 
 <iframe
   src="/plots/voting_map.html"
@@ -157,57 +165,57 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
 
 | State | P(vote flips state) | P(state flips election) | EV |
 |-------|--------------------:|------------------------:|---:|
-| AK | 8.50e-06 | 2.27% | $96,489 |
-| AR | 3.31e-06 | 4.54% | $75,267 |
-| NM | 3.59e-06 | 3.79% | $67,966 |
-| NH | 4.23e-06 | 3.02% | $64,038 |
-| NV | 2.68e-06 | 4.55% | $60,892 |
-| KS | 2.62e-06 | 4.54% | $59,413 |
-| ME | 3.27e-06 | 3.03% | $49,518 |
-| IA | 2.13e-06 | 4.54% | $48,388 |
-| AZ | 1.15e-06 | 8.35% | $47,900 |
-| GA | 7.48e-07 | 12.18% | $45,553 |
-| WI | 1.15e-06 | 7.58% | $43,702 |
-| RI | 2.86e-06 | 3.03% | $43,330 |
-| TX | 2.66e-07 | 31.75% | $42,251 |
-| NC | 6.91e-07 | 12.18% | $42,076 |
-| PA | 5.64e-07 | 14.52% | $40,925 |
-| MI | 6.88e-07 | 11.40% | $39,221 |
-| MN | 1.01e-06 | 7.58% | $38,121 |
-| VA | 7.43e-07 | 9.87% | $36,673 |
-| FL | 2.99e-07 | 23.30% | $34,849 |
-| OH | 5.07e-07 | 12.96% | $32,837 |
-| IL | 4.24e-07 | 14.51% | $30,773 |
-| CO | 7.47e-07 | 7.58% | $28,303 |
-| SC | 7.84e-07 | 6.83% | $26,773 |
-| OR | 8.41e-07 | 6.06% | $25,474 |
-| NE | 1.34e-06 | 3.78% | $25,352 |
-| MT | 1.29e-06 | 3.02% | $19,493 |
-| OK | 7.04e-07 | 5.29% | $18,641 |
-| CT | 6.20e-07 | 5.30% | $16,415 |
-| MO | 4.32e-07 | 7.59% | $16,388 |
-| DE | 1.39e-06 | 2.27% | $15,793 |
-| IN | 3.44e-07 | 8.36% | $14,363 |
-| NJ | 2.41e-07 | 10.64% | $12,794 |
-| NY | 1.01e-07 | 21.67% | $10,962 |
-| HI | 5.42e-07 | 3.02% | $8,195 |
-| WA | 1.56e-07 | 9.11% | $7,120 |
+| AK | 8.50e-06 | 2.27% | $96,427 |
+| AR | 3.31e-06 | 4.54% | $75,241 |
+| NM | 3.59e-06 | 3.78% | $67,925 |
+| NH | 4.23e-06 | 3.03% | $64,067 |
+| NV | 2.68e-06 | 4.54% | $60,750 |
+| KS | 2.62e-06 | 4.54% | $59,493 |
+| ME | 3.27e-06 | 3.03% | $49,531 |
+| IA | 2.13e-06 | 4.54% | $48,422 |
+| AZ | 1.15e-06 | 8.35% | $47,869 |
+| GA | 7.48e-07 | 12.19% | $45,587 |
+| WI | 1.15e-06 | 7.58% | $43,745 |
+| RI | 2.86e-06 | 3.03% | $43,300 |
+| TX | 2.66e-07 | 31.75% | $42,247 |
+| NC | 6.91e-07 | 12.19% | $42,121 |
+| PA | 5.64e-07 | 14.52% | $40,927 |
+| MI | 6.88e-07 | 11.41% | $39,250 |
+| MN | 1.01e-06 | 7.58% | $38,128 |
+| VA | 7.43e-07 | 9.87% | $36,685 |
+| FL | 2.99e-07 | 23.30% | $34,854 |
+| OH | 5.07e-07 | 12.96% | $32,839 |
+| IL | 4.24e-07 | 14.51% | $30,780 |
+| CO | 7.47e-07 | 7.58% | $28,291 |
+| SC | 7.84e-07 | 6.82% | $26,731 |
+| OR | 8.41e-07 | 6.06% | $25,485 |
+| NE | 1.34e-06 | 3.78% | $25,377 |
+| MT | 1.29e-06 | 3.03% | $19,505 |
+| OK | 7.04e-07 | 5.30% | $18,654 |
+| CT | 6.20e-07 | 5.30% | $16,440 |
+| MO | 4.32e-07 | 7.58% | $16,364 |
+| DE | 1.39e-06 | 2.27% | $15,776 |
+| IN | 3.44e-07 | 8.35% | $14,335 |
+| NJ | 2.41e-07 | 10.64% | $12,802 |
+| NY | 1.01e-07 | 21.66% | $10,955 |
+| HI | 5.42e-07 | 3.03% | $8,204 |
+| WA | 1.56e-07 | 9.11% | $7,125 |
 | MS | 2.84e-07 | 4.54% | $6,442 |
-| TN | 1.43e-07 | 8.35% | $5,959 |
-| LA | 1.76e-07 | 6.05% | $5,309 |
-| ND | 2.80e-07 | 2.26% | $3,173 |
-| SD | 2.73e-07 | 2.26% | $3,087 |
-| CA | 1.14e-08 | 46.04% | $2,628 |
-| UT | 1.01e-07 | 4.54% | $2,299 |
+| TN | 1.43e-07 | 8.34% | $5,958 |
+| LA | 1.76e-07 | 6.06% | $5,318 |
+| ND | 2.80e-07 | 2.27% | $3,177 |
+| SD | 2.73e-07 | 2.27% | $3,094 |
+| CA | 1.14e-08 | 46.08% | $2,630 |
+| UT | 1.01e-07 | 4.54% | $2,298 |
 | WV | 1.35e-07 | 3.02% | $2,045 |
-| MD | 3.22e-08 | 7.58% | $1,221 |
-| MA | 2.45e-08 | 8.34% | $1,021 |
+| MD | 3.22e-08 | 7.59% | $1,222 |
+| MA | 2.45e-08 | 8.35% | $1,022 |
 | VT | 6.39e-08 | 2.27% | $725 |
 | AL | 1.95e-08 | 6.82% | $666 |
 | KY | 2.12e-08 | 6.06% | $641 |
 | WY | 8.89e-09 | 2.27% | $101 |
 | ID | 5.56e-09 | 3.03% | $84 |
-| DC | 1.33e-20 | 2.28% | $0 |
+| DC | 1.33e-20 | 2.27% | $0 |
 
 </table>
 </div>
@@ -221,13 +229,13 @@ Oh, and then there is DC, where a voter has an astronomically small \\(3.02\time
 ## What can I do in $NONSWING_STATE?
 
 ### Political activism
-Convincing an undecided person to vote for your preferred candidate in Alaska has an EV of $96k.
-To put this into perspective, suppose you live in Idaho (where your vote is worth $84). Voting in your state is roughly equivalent to reaching out to a single person in Alaska who is currently undecided and ~brainwashing~ convincing them to vote for your candidate at a 0.1% success rate.
+Convincing an undecided voter in Alaska to vote for your preferred candidate has an EV of $96k.
+To put this into perspective, suppose you live in Idaho (where your vote is worth $84). Voting in your state is roughly equivalent to reaching out to a single undecided Alaskan voter and ~brainwashing~ convincing them to vote for your candidate at a 0.1% success rate.
 
 ### Vote swap
 In the current equilibrium of the U.S., due to the two party system, there are only two candidates ever "worth" voting for if you think in terms of expected value. That being said, there are still some people who vote for independent candidates, knowing damn well it is futile but presumably to "rage against the dying of the light", as my friend put it.
 
-This opens the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swapping). If Dave the Democrat lives in a decided state (e.g. DC) and has a third-party friend Trent who lives in a swing state (who prefers Democrat to Republican), a swap can be arranged, where Trent votes Democrat and Dave votes third-party, and both people are happier. This is legal in the U.S., but of course requires trust to function.
+This opens the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swapping). If Dave the Democrat lives in a decided state (e.g. DC) and has a third-party friend Trent in a swing state (who prefers Democrat to Republican), they can arrange a swap: Trent votes Democrat and Dave votes third-party, both are happier. This is legal in the U.S., but requires trust to function.
 
 # Conclusion
 
