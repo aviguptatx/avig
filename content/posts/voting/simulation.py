@@ -347,7 +347,7 @@ def create_map(results):
 
 
 if __name__ == "__main__":
-    banzhaf_results = simulate_banzhaf(10_000_000)
+    banzhaf_results = simulate_banzhaf(100_000_000)
     
     results = []
     for state in ELECTORAL_VOTES:
