@@ -10,7 +10,7 @@ So why the hell do I vote?
 By a back-of-the-envelope estimate, future me will waste about ten hours of my life voting in federal elections. Ten hours for something I’m pretty sure is useless. This is deeply unsettling, so naturally, I sat down and spent far more than ten hours proving whether those ten hours were, in fact, going to be wasted.
 
 # Formulation
-The expected value of your vote depends on two things: the probability your vote changes the election outcome, and the value gained from that change Mathematically, we have:
+The expected value of your vote depends on two things: the probability your vote changes the election outcome, and the value gained from that change. Mathematically, we have:
 
 $$EV = P(\text{vote flips state}) \times P(\text{state flips election}) \times \Delta V$$
 
