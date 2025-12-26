@@ -10,11 +10,16 @@ So why the hell do I vote?
 By a back-of-the-envelope estimate, future me will waste about ten hours of my life voting in federal elections. Ten hours for something I’m pretty sure is useless. This is deeply unsettling, so naturally, I sat down and spent far more than ten hours proving whether those ten hours were, in fact, going to be wasted.
 
 # Formulation
-The expected value of your vote depends on two things: the probability your vote changes the election outcome, and the value gained from that change. Mathematically, we have:
+The expected value of your vote depends on two things: the chance your vote changes the election outcome, and the altruistic value of your preferred candidate winning the election. Mathematically, we have:
 
-$$EV = P(\text{vote flips state}) \times P(\text{state flips election}) \times \Delta V$$
+$$EV = \underbrace{P(\text{vote flips state}) \times P(\text{state flips election})}_{\text{chance vote flips election}} \times \underbrace{\Delta V}_{\text{altruistic value of election}}$$
 
-where \\(\Delta V\\) is the value difference between your preferred candidate winning versus losing. We'll build up each component in turn.
+### A note on \\(\Delta V\\): why altruistic value?
+We use \\(\Delta V\\) to represent the *altruistic* value difference between two candidates -- not the personal gain. Why?
+
+Voting for personal gain simply doesn't make sense. Even if you somehow valued the election at $1 million for yourself personally, the probability terms are so small that your EV would be well under a dollar. No rational self-interested actor should vote.
+
+The only lens under which voting makes mathematical sense is the altruistic one: the aggregate value created for society if your preferred candidate wins. So that's what we'll estimate. Now let's calculate each component, starting with the probability your vote flips your state.
 
 ## P(vote flips state)
 ### Normal distribution as an approximator
@@ -138,7 +143,7 @@ Both calculations -- the state-level tie probability and the Banzhaf simulation 
 A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors, but we leave this as an exercise to the reader :)
 
 ## Value of the election
-The final term is \\(\Delta V\\) -- the value difference between candidates. This represents the difference in "societal good" created between the two candidates -- the value of the "donation" you make if your vote ends up being decisive. This is the hardest to estimate: beyond monetary considerations, there are social and geopolitical factors that we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
+Now for the hard part: estimating \\(\Delta V\\). Beyond monetary considerations, there are social and geopolitical factors we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
 
 ### The federal budget as a proxy
 The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president can't influence the former, and influencing the latter requires legislation. So let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
