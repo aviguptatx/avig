@@ -12,7 +12,11 @@ By a back-of-the-envelope estimate, future me will waste about ten hours of my l
 # Formulation
 The expected value of your vote depends on two things: the chance your vote changes the election outcome, and the altruistic value of your preferred candidate winning the election. Mathematically, we have:
 
+<div class="small-equation-mobile">
+
 $$EV = \underbrace{P(\text{vote flips state}) \times P(\text{state flips election})}_{\text{chance vote flips election}} \times \underbrace{\Delta V}_{\text{altruistic value of election}}$$
+
+</div>
 
 ### A note on \\(\Delta V\\): why altruistic value?
 We use \\(\Delta V\\) to represent the *altruistic* value difference between two candidates -- not the personal gain. Why?
