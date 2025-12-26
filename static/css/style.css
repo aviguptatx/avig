@@ -81,4 +81,8 @@ thead, tfoot, tr:nth-child(even) {
     .katex {
         font-size: 0.85em;
     }
+    
+    .small-equation-mobile .katex-display {
+        font-size: 0.55em;
+    }
 }
