@@ -23,7 +23,9 @@ We use \\(\Delta V\\) to represent the *altruistic* value difference between two
 
 Voting for personal gain simply doesn't make sense. Even if you somehow valued the election at $1 million for yourself personally, the probability terms are so small that your EV would be well under a dollar. No rational self-interested actor should vote.
 
-The only lens under which voting makes mathematical sense is the altruistic one: the aggregate value created for society if your preferred candidate wins. So that's what we'll estimate. Now let's calculate each component, starting with the probability your vote flips your state.
+The only lens under which voting makes mathematical sense is the altruistic one: the aggregate value created for society if your preferred candidate wins. So that's what we'll estimate.
+
+Now let's calculate each component, starting with the probability your vote flips your state.
 
 ## P(vote flips state)
 ### Normal distribution as an approximator
