@@ -9,13 +9,13 @@ After half an hour of research, I landed on the current setup, which uses [Hugo]
 
 I was able to get this setup working in about 20 minutes on macOS. Note that these instructions are largely adapted from Cloudflare's [tutorial](https://developers.cloudflare.com/pages/framework-guides/deploy-a-hugo-site/) on deploying a Hugo site, with some modifications (using a different theme, adding a `.gitignore`, etc).
 
-1. Install hugo and create a new project
+1. Install Hugo and create a new project
     ```
     brew install hugo
     hugo new site avig
     ```
 
-2. Initialize a local Git repository
+2. Initialize a local Git repo
 
     ```
     cd avig
@@ -34,9 +34,8 @@ I was able to get this setup working in about 20 minutes on macOS. Note that the
 
     Remove `draft: true` from the resulting file so that hugo will publish it during the build step.
 
-4. Create a GitHub repository and push your local repo
+4. [Create a new repo on GitHub](https://github.com/new) and push your local repo
 
-    [Create a new repository on GitHub](https://github.com/new) and then push to it:
     ```
     git remote add origin git@github.com:aviguptatx/avig.git
     git add .
@@ -44,7 +43,7 @@ I was able to get this setup working in about 20 minutes on macOS. Note that the
     git push -u origin main
     ```
 
-5. Deploy the GitHub repository via Cloudflare Pages
+5. Deploy the GitHub repo via Cloudflare Pages
 
     Follow [this tutorial](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/) to integrate a Cloudflare Pages deployment with the GitHub repository you created in the previous step. When configuring the deployment, you should have the option to select `Hugo` as your build preset. If not, manually set the build command to `hugo` and the build output directory to `/public`.
 
