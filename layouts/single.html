@@ -1,0 +1,23 @@
+{{ partial "header.html" . }}
+<div id="reading-progress" style="position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: linear-gradient(to right, #4f46e5, #06b6d4); z-index: 9999; transition: width 0.1s ease;"></div>
+
+<div class="article-meta">
+<h1><span class="title">{{ .Title | markdownify }}</span></h1>
+{{ with .Params.author }}<h2 class="author">{{ . }}</h2>{{ end }}
+{{ if (gt .Params.date 0) }}<h2 class="date">{{ .Date.Format "January 2006" }}</h2>{{ end }}
+</div>
+
+<main>
+{{ .Content }}
+</main>
+
+<script>
+window.addEventListener('scroll', function() {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('reading-progress').style.width = scrolled + '%';
+});
+</script>
+
+{{ partial "footer.html" . }}
