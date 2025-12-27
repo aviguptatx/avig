@@ -18,14 +18,14 @@ $$EV = \underbrace{P(\text{vote flips state}) \times P(\text{state flips electio
 
 </div>
 
-### A note on \\(\Delta V\\): why altruistic value?
-We use \\(\Delta V\\) to represent the *altruistic* value difference between two candidates -- not the personal gain. Why?
+### A note on \(\Delta V\): why altruistic value?
+We use \(\Delta V\) to represent the *altruistic* value difference between two candidates -- not the personal gain. Why?
 
-Voting for personal gain simply doesn't make sense. Even if you somehow valued the election at $1 million for yourself personally, the probability terms are so small that your EV would be well under a dollar. No rational self-interested actor should vote.
+Voting for personal gain simply doesn't make sense. Even if you somehow valued the election at $1 million for yourself, the probability terms are so small that your EV would be ~$0. No rational self-interested actor should vote.
 
 The only lens under which voting makes mathematical sense is the altruistic one: the aggregate value created for society if your preferred candidate wins. So that's what we'll estimate.
 
-Now let's calculate each component, starting with the probability your vote flips your state.
+Let's calculate each component, starting with the probability your vote flips your state.
 
 ## P(vote flips state)
 ### Normal distribution as an approximator
@@ -40,7 +40,7 @@ Consider a small state called Splitville with:
 - Polls show a 50%–50% tie
 - Polling error with a standard deviation of 5 percentage points
 
-We model the number of votes for Alice as a normal distribution centered at \\(\mu = 50\\) (the polled expectation) with standard deviation \\(\sigma = 5\\) (the polling error, expressed in votes).
+We model the number of votes for Alice as a normal distribution centered at \(\mu = 50\) (the polled expectation) with standard deviation \(\sigma = 5\) (the polling error, expressed in votes).
 
 Your vote is decisive if Alice would otherwise receive exactly 50 votes. We can find this probability using the normal distribution's probability density function:
 
@@ -49,7 +49,7 @@ $$
 \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
 $$
 
-Since vote counts are integers but the normal distribution is continuous, we apply a *continuity correction* and integrate over the interval \\([49.5, 50.5]\\):
+Since vote counts are integers but the normal distribution is continuous, we apply a *continuity correction* and integrate over the interval \([49.5, 50.5]\):
 
 $$
 P_{\text{tie}} \approx
@@ -66,11 +66,11 @@ This evaluates to 0.0797, or about an 8% chance of a tie in Splitville.
 ### Generalizing
 
 Generalizing, define:
-- \\(N\\) = number of voters (excluding you)
-- \\(m\\) = polling margin as a fraction (e.g., a 55%–45% lead means \\(m = 0.10\\))
-- \\(r\\) = polling error as a fraction of voters, \\(r \neq 0\\)[^2]
+- \(N\) = number of voters (excluding you)
+- \(m\) = polling margin as a fraction (e.g., a 55%–45% lead means \(m = 0.10\))
+- \(r\) = polling error as a fraction of voters, \(r \neq 0\)[^2]
 
-Your candidate's expected vote count is \\(N \cdot (0.5 + m/2)\\), and the standard deviation is \\(rN\\). A tie occurs at \\(N/2\\) votes for each candidate.
+Your candidate's expected vote count is \(N \cdot (0.5 + m/2)\), and the standard deviation is \(rN\). A tie occurs at \(N/2\) votes for each candidate.
 
 The probability of a tie becomes:
 
@@ -84,7 +84,7 @@ P_{\text{tie}}(N, m, r) =
 dx
 $$
 
-For large \\(N\\), the pdf barely changes over a single-vote interval, so we can use a midpoint Riemann approximation by evaluating at the midpoint \\(x = N/2\\) and multiplying by the interval width (which is 1):
+For large \(N\), the pdf barely changes over a single-vote interval, so we can use a midpoint Riemann approximation by evaluating at the midpoint \(x = N/2\) and multiplying by the interval width (which is 1):
 
 $$
 P_{\text{tie}}(N, m, r) \approx
@@ -108,7 +108,7 @@ P_{\text{tie}}(N, m, r) \approx
 \right)
 $$
 
-Finally, we have to multiply by a factor of 0.5 to account for tiebreaker mechanics[^3], which we must factor in for both even and odd \\(N\\):
+Finally, we have to multiply by a factor of 0.5 to account for tiebreaker mechanics[^3], which we must factor in for both even and odd \(N\):
 
 $$
 P_{\text{vote flips state}}(N, m, r) \approx
@@ -120,26 +120,27 @@ $$
 
 
 #### Observations
-- Your vote's impact is inversely proportional to \\(N\\).
-- In a true toss-up (\\(m=0\\)), the exponential term becomes \\(e^0 = 1\\), and \\(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\\)
+- Your vote's impact is inversely proportional to \(N\).
+- In a true toss-up (\(m=0\)), the exponential term becomes \(e^0 = 1\), and \(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\)
 
 ## P(state flips election)
 We now know the probability of a vote flipping your state, but we still need to determine the probability that this event flips the entire election result.
 
 The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) measures exactly this: the probability that a voting bloc is pivotal in a weighted voting system. The calculation enumerates all possible voter coalitions, then counts the proportion of these in which flipping the bloc's vote changes the outcome.
 
-Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \\(2^{51}\\) combinations -- not practical to enumerate. 
+Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \(2^{51}\) combinations -- not practical to enumerate. 
 
 ### Monte Carlo simulation
 Instead, we'll estimate via Monte Carlo simulation. The algorithm:
 1. Generate a randomized election: for each state, flip a fair coin to determine the winner
 2. Sum electoral votes for candidate A, call this \(E_A\)
-3. Check pivotality for each state \(s\): 
-   - If candidate A won state \(s\): Is \(E_A \geq 270\) but \(E_A - \text{EV}_s < 270\)?
-   - If candidate A lost state \(s\): Is \(E_A < 270\) but \(E_A + \text{EV}_s \geq 270\)?
+3. Check pivotality for each state \(s\):
+   - Let \(V_s\) represent the number of electoral votes that state \(s\) is worth
+   - If candidate A won state \(s\): Is \(E_A \geq 270\) but \(E_A - \text{V}_s < 270\)?
+   - If candidate A lost state \(s\): Is \(E_A < 270\) but \(E_A + \text{V}_s \geq 270\)?
    - If either condition holds, state \(s\) is pivotal in this simulation
 
-For each state, \\(P(\text{state flips election}) = (\text{number of times pivotal}) / (\text{total simulations})\\). Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
+For each state, \(P(\text{state flips election}) = (\text{number of times pivotal}) / (\text{total simulations})\). Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
 
 ## Limitations
 Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. In 2024, the seven main swing states (PA, MI, WI, GA, NC, AZ, NV) all moved in the same direction. This correlation has two effects, neither of which we account for:
@@ -149,7 +150,7 @@ Both calculations -- the state-level tie probability and the Banzhaf simulation 
 A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors, but we leave this as an exercise to the reader :)
 
 ## Value of the election
-Now for the hard part: estimating \\(\Delta V\\). Beyond monetary considerations, there are social and geopolitical factors we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
+Now for the hard part: estimating \(\Delta V\). Beyond monetary considerations, there are social and geopolitical factors we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
 
 ### The federal budget as a proxy
 The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president can't influence the former, and influencing the latter requires legislation. So let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
@@ -158,11 +159,11 @@ The president also influences via legislation, Supreme Court appointments, forei
 $$\Delta V \approx 1T$$
 
 ### Confidence factor
-Since most voters aren't 100% confident in their vote, we should also apply a confidence discount factor. Even if you do feel 100% confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \\(c=0.5\\) gives us:
+Since most voters aren't 100% confident in their vote, we should also apply a confidence discount factor. Even if you do feel 100% confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \(c=0.5\) gives us:
 $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
-Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \\(\Delta V\\) of 500B, then ran 100 million simulations[^6] to estimate \\(P(\text{state flips election})\\) for each state. Here are the results:
+Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \(\Delta V\) of 500B, then ran 100 million simulations[^6] to estimate \(P(\text{state flips election})\) for each state. Here are the results:
 
 <iframe
   src="/plots/voting_map.html"
@@ -235,7 +236,7 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
 ## Voting EV
 The EV of a vote ranges from $84 (Idaho) to $96k (Alaska). A vote in Alaska is ~1000 times more valuable than a vote in Idaho (regardless of the value one assigns to the election itself). The chance of a vote swinging the entire election ranges from ~1 in 6 billion in Idaho to ~1 in 5 million in Alaska.
 
-Oh, and then there is DC, where a voter has an astronomically small \\(3.02\times 10^{-22}\\) chance of swinging an election. If a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
+Oh, and then there is DC, where a voter has an astronomically small \(3.02\times 10^{-22}\) chance of swinging an election. If a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
 
 ## What can I do in $NONSWING_STATE?
 
@@ -257,8 +258,8 @@ There are plenty of reasons to ignore the numbers and vote: self-expression, civ
 But now when someone claims my vote is worthless, or that the Electoral College is a good thing, I can pull out probability density functions and Banzhaf simulations and end the conversation immediately. Not because I've won, but because literally no one cares.
 
 [^1]: [This](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) 3Blue1Brown video is a good explainer on the Central Limit Theorem.
-[^2]: If \\(r=0\\), we simply have 100% probability if \\(m=0\\) and 0% probability otherwise.
-[^3]: Assume the tiebreaker is a coin toss. For even \\(N\\), without your vote, your candidate wins the tiebreaker with probability \\(0.5\\). For odd \\(N\\), with your vote, your candidate wins the tiebreaker with probability \\(0.5\\). Thus in either case, your vote only changes the outcome half the time.
+[^2]: If \(r=0\), we simply have 100% probability if \(m=0\) and 0% probability otherwise.
+[^3]: Assume the tiebreaker is a coin toss. For even \(N\), without your vote, your candidate wins the tiebreaker with probability \(0.5\). For odd \(N\), with your vote, your candidate wins the tiebreaker with probability \(0.5\). Thus in either case, your vote only changes the outcome half the time.
 [^4]: Note that we treat Maine and Nebraska as single blocs in this analysis; in reality, these states allocate electoral votes by district rather than winner-take-all.
 [^5]: There are plenty of examples of this -- see the [Great Hanoi Rat Massacre](https://en.wikipedia.org/wiki/Great_Hanoi_Rat_Massacre) as one of my favorites. Or consider that electing the worse candidate might be bad in the short-term but provoke reform and ends up being long-term net good.
 [^6]: Source code [here](https://github.com/aviguptatx/avig/tree/main/content/posts/voting/simulation.py). You can run the code with your own parameters and get a table and annotated map like the ones in this post.
