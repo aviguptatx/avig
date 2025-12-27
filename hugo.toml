@@ -1,6 +1,6 @@
 baseURL = 'https://avig.pages.dev/'
 languageCode = 'en-us'
-title = "Avi Gupta"
+title = "Avi's Blog"
 theme = 'xmin'
 
 [markup.goldmark.renderer]
