@@ -5,10 +5,24 @@ body {
   line-height: 1.5;
 }
 
+/* title etc */
+.article-meta {
+  margin-bottom: 0em;
+  position: relative;
+}
+
+.article-meta .date {
+  margin-bottom: 0em;
+  position: absolute;
+  bottom: 0px;
+  right: 0;
+  font-size: 0.9em;
+}
+
 /* header and footer areas */
 .menu { padding: 0; }
 .menu li { display: inline-block; }
-.article-meta, .menu a {
+.menu a {
   text-decoration: none;
   background: #eee;
   padding: 5px;
@@ -18,7 +32,6 @@ body {
 .title { font-size: 1.1em; }
 footer a { text-decoration: none; }
 hr {
-  border-style: dashed;
   color: #ddd;
 }
 
@@ -43,7 +56,7 @@ blockquote {
 
 /* allow big tables to be scrollable */
 .table-wrapper {
-  max-height: 50vh; /* 50% of viewport height */
+  max-height: 50vh;
   overflow-y: auto;
   position: relative;
 }
@@ -85,4 +98,14 @@ thead, tfoot, tr:nth-child(even) {
     .small-equation-mobile .katex-display {
         font-size: 0.55em;
     }
+}
+
+/* janky dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: rgba(255, 255, 255, .85);
+  }
+  html, img, video, iframe {
+    filter: invert(1);
+  }
 }
