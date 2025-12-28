@@ -35,16 +35,17 @@ body {
 
 /* title etc */
 .article-meta {
-  margin-bottom: 0em;
-  position: relative;
+  margin-bottom: 1em;
+}
+
+.article-meta h1 {
+  margin-bottom: 0.25em;
 }
 
 .article-meta .date {
-  margin-bottom: 0em;
-  position: absolute;
-  bottom: 0px;
-  right: 0;
+  margin-top: 0;
   font-size: 0.9em;
+  color: #666;
 }
 
 /* header and footer areas */
@@ -119,17 +120,17 @@ thead, tfoot, tr:nth-child(even) {
 
 /* shrink KaTeX equations on mobile */
 @media (max-width: 768px) {
-    .katex-display {
-        font-size: 0.75em;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
-    
-    .katex {
-        font-size: 0.85em;
-    }
-    
-    .small-equation-mobile .katex-display {
-        font-size: 0.55em;
-    }
+  .katex-display {
+      font-size: 0.75em;
+      overflow-x: auto;
+      overflow-y: hidden;
+  }
+  
+  .katex {
+      font-size: 0.85em;
+  }
+  
+  .small-equation-mobile .katex-display {
+      font-size: 0.55em;
+  }
 }
