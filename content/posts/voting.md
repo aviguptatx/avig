@@ -136,11 +136,13 @@ Instead, we'll estimate via Monte Carlo simulation. The algorithm:
 2. Sum electoral votes for candidate A, call this \(E_A\)
 3. Check pivotality for each state \(s\):
    - Let \(V_s\) represent the number of electoral votes that state \(s\) is worth
-   - If candidate A won state \(s\): Is \(E_A \geq 270\) but \(E_A - \text{V}_s < 270\)?
-   - If candidate A lost state \(s\): Is \(E_A < 270\) but \(E_A + \text{V}_s \geq 270\)?
+   - If candidate A won state \(s\):
+     - Is \(E_A \geq 270\) but \(E_A - \text{V}_s < 270\)?
+   - If candidate A lost state \(s\):
+     - Is \(E_A < 270\) but \(E_A + \text{V}_s \geq 270\)?
    - If either condition holds, state \(s\) is pivotal in this simulation
 
-For each state, \(P(\text{state flips election}) = (\text{number of times pivotal}) / (\text{total simulations})\). Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
+For each state, \(P(\text{state flips election})\) evaluates to the proportion of simulations in which the state was pivotal. Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
 
 ## Limitations
 Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. In 2024, the seven main swing states (PA, MI, WI, GA, NC, AZ, NV) all moved in the same direction. This correlation has two effects, neither of which we account for:
@@ -172,7 +174,7 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
   frameborder="0">
 </iframe>
 
-<div class="table-wrapper">
+<div class="giant-table">
 <table>
 
 | State | P(vote flips state) | P(state flips election) | EV |
