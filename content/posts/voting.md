@@ -255,9 +255,13 @@ This opens the door to [vote swapping](https://en.wikipedia.org/wiki/Vote_swappi
 
 This entire analysis is an elaborate rationalization for something I was probably going to do anyway. And it treats voting as a means to an end, a pure mathematical decision.
 
-There are plenty of reasons to ignore the numbers and vote: self-expression, civic duty, or simply using Election Day as a forcing function to stay politically informed. All valid.
+But there are plenty of reasons to ignore the numbers and vote: self-expression, civic duty, or simply using Election Day as a forcing function to stay politically informed. All valid.
 
 But now when someone claims my vote is worthless, or that the Electoral College is a good thing, I can pull out probability density functions and Banzhaf simulations and end the conversation immediately. Not because I've won, but because literally no one cares.
+
+{{< separator >}}
+
+*Thanks to draft readers Varun and Michael.*
 
 [^1]: [This](https://youtu.be/zeJD6dqJ5lo?si=7vb6GaENWJ9uYh4o) 3Blue1Brown video is a good explainer on the Central Limit Theorem.
 [^2]: If \(r=0\), we simply have 100% probability if \(m=0\) and 0% probability otherwise.
