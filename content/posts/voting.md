@@ -166,14 +166,7 @@ $$\Delta V \approx 500B$$
 
 ## Applying this to the 2024 US Presidential Election
 Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \(\Delta V\) of 500B, then ran 100 million simulations[^6] to estimate \(P(\text{state flips election})\) for each state. Here are the results:
-
-<iframe
-  src="/plots/voting_map.html"
-  width="100%"
-  height="320"
-  frameborder="0">
-</iframe>
-
+{{< darklight light="/plots/voting_map_light_mode.png" dark="/plots/voting_map_dark_mode.png" alt="Voting Map" >}}
 <div class="giant-table">
 <table>
 
