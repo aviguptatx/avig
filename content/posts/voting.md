@@ -1,6 +1,6 @@
 +++
 date = '2025-12-22T14:05:41-08:00'
-title = 'The value of voting in the U.S.'
+title = 'How much is your vote actually worth?'
 +++
 
 I like to think I'm principled in my approach to life. I don't play the lottery. I buy the cheapest apartment insurance possible. I've run the numbers. 
@@ -9,8 +9,12 @@ So why the hell do I vote?
 
 By a back-of-the-envelope estimate, future me will waste about ten hours of my life voting in federal elections. Ten hours for something I’m pretty sure is useless. This is deeply unsettling, so naturally, I sat down and spent far more than ten hours proving whether those ten hours were, in fact, going to be wasted.
 
-# Formulation
-The expected value of your vote depends on two things: the chance your vote changes the election outcome, and the altruistic value of your preferred candidate winning the election. Mathematically, we have:
+# How much is your vote actually worth?
+What are the chances your vote matters? Not "matters" in some warm fuzzy civic duty sense. I mean literally -- mechanically -- flips the outcome of the election.
+
+The answer depends on two things: the chance your vote flips your state, and the chance that flipping your state flips the whole election. Then you multiply that by how much better you think your candidate is than the other to get a dollar amount representing the value of your vote.
+
+Mathematically:
 
 <div class="small-equation-mobile">
 
@@ -21,23 +25,22 @@ $$EV = \underbrace{P(\text{vote flips state}) \times P(\text{state flips electio
 ### A note on \(\Delta V\): why altruistic value?
 We use \(\Delta V\) to represent the *altruistic* value difference between two candidates -- not the personal gain. Why?
 
-Voting for personal gain simply doesn't make sense. Even if you somehow valued the election at $1 million for yourself, the probability terms are so small that your EV would be ~$0. No rational self-interested actor should vote.
+Voting for personal gain simply doesn't make sense. Even if a candidate promised you $1 million if they win, the probability terms we are about to calculate are so small that your expected value would round to $0. Voting for pure self-interest makes no sense.
 
-The only lens under which voting makes mathematical sense is the altruistic one: the aggregate value created for society if your preferred candidate wins. So that's what we'll estimate.
+The only way voting makes mathematical sense is if you care about the total value created for everyone. That's what \(\Delta V\) represents — how much better off society will be with your candidate in office rather than the other one.
 
-Let's calculate each component, starting with the probability your vote flips your state.
+So that's what we'll estimate. Now let's figure out those probabilities.
 
-## P(vote flips state)
+## Part 1: What are the chances you flip your state?
 ### Normal distribution as an approximator
 
 When we aggregate many polls, the Central Limit Theorem[^1] tells us their average will be approximately normally distributed, regardless of the underlying distribution of voter preferences.
 
-### Splitville
-
+### Starting simple: Splitville
 Consider a small state called Splitville with:
-- 100 voters (excluding you), all of whom will vote
+- 100 voters (not counting you)
 - Two candidates: Alice and Bob
-- Polls show a 50%–50% tie
+- Polls show a perfect 50–50 tie
 - Polling error with a standard deviation of 5 percentage points
 
 We model the number of votes for Alice as a normal distribution centered at \(\mu = 50\) (the polled expectation) with standard deviation \(\sigma = 5\) (the polling error, expressed in votes).
@@ -63,9 +66,10 @@ $$
 
 This evaluates to 0.0797, or about an 8% chance of a tie in Splitville.
 
-### Generalizing
+Not bad odds! Of course, real states are bigger than Splitville.
 
-Generalizing, define:
+### The general formula
+Okay, now let's generalize. For any state, we need to define:
 - \(N\) = number of voters (excluding you)
 - \(m\) = polling margin as a fraction (e.g., a 55%–45% lead means \(m = 0.10\))
 - \(r\) = polling error as a fraction of voters, \(r \neq 0\)[^2]
@@ -123,7 +127,7 @@ $$
 - Your vote's impact is inversely proportional to \(N\).
 - In a true toss-up (\(m=0\)), the exponential term becomes \(e^0 = 1\), and \(p_{\text{vote flips state}}(N,r)\approx \frac{0.2}{rN}\)
 
-## P(state flips election)
+## Part 2: What are the chances your state is pivotal?
 We now know the probability of a vote flipping your state, but we still need to determine the probability that this event flips the entire election result.
 
 The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) measures exactly this: the probability that a voting bloc is pivotal in a weighted voting system. The calculation enumerates all possible voter coalitions, then counts the proportion of these in which flipping the bloc's vote changes the outcome.
@@ -131,18 +135,14 @@ The [Banzhaf power index](https://en.wikipedia.org/wiki/Banzhaf_power_index) mea
 Computing this would require checking all possible combinations of state outcomes. With 51 voting blocs[^4] (50 states + DC), that's \(2^{51}\) combinations -- not practical to enumerate. 
 
 ### Monte Carlo simulation
-Instead, we'll estimate via Monte Carlo simulation. The algorithm:
-1. Generate a randomized election: for each state, flip a fair coin to determine the winner
-2. Sum electoral votes for candidate A, call this \(E_A\)
-3. Check pivotality for each state \(s\):
-   - Let \(V_s\) represent the number of electoral votes that state \(s\) is worth
-   - If candidate A won state \(s\):
-     - Is \(E_A \geq 270\) but \(E_A - \text{V}_s < 270\)?
-   - If candidate A lost state \(s\):
-     - Is \(E_A < 270\) but \(E_A + \text{V}_s \geq 270\)?
-   - If either condition holds, state \(s\) is pivotal in this simulation
+Instead, let's simulate. Here's the algorithm:
+1. Flip a coin for each state to randomly assign a winner
+2. Add up the electoral votes for candidate A
+3. For each state, check: "If this state flipped, would it change who wins?"
 
 For each state, \(P(\text{state flips election})\) evaluates to the proportion of simulations in which the state was pivotal. Repeating this simulation millions of times gives us an estimate of each state's structural power in the Electoral College.
+
+I ran 100 million simulations. More on the results in a bit.
 
 ## Limitations
 Both calculations -- the state-level tie probability and the Banzhaf simulation -- treat outcomes as independent. In reality, polling errors are correlated across states. A national polling miss (say, systematically undersampling non-college voters) shifts all states in the same direction. In 2024, the seven main swing states (PA, MI, WI, GA, NC, AZ, NV) all moved in the same direction. This correlation has two effects, neither of which we account for:
@@ -151,20 +151,25 @@ Both calculations -- the state-level tie probability and the Banzhaf simulation 
 
 A better approach would be to model state outcomes as draws from a multivariate normal distribution with multi-state correlations estimated from historical polling errors, but we leave this as an exercise to the reader :)
 
-## Value of the election
-Now for the hard part: estimating \(\Delta V\). Beyond monetary considerations, there are social and geopolitical factors we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
+## How much is the election actually worth?
+Alright, we've figured out the probability side of the equation. Now for the hard part: what's \(\Delta V\)? How much "value" does one candidate create over the other? Beyond monetary considerations, there are social and geopolitical factors we can't put a price tag on. That being said, we're after an order-of-magnitude estimate, so let the hand-waving begin.
 
 ### The federal budget as a proxy
-The 2024 federal budget was about $6.8T. About $1T goes to paying interest, and about $4T goes to mandatory spending, such as Social Security and Medicare. The president can't influence the former, and influencing the latter requires legislation. So let's focus on discretionary spending, which is about $1.8T. Over 4 years, this amounts to $7.2T. Within the discretionary bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay benefits. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
+The 2024 federal budget was about $6.8T. Let's break it down.
+- ~$1T goes to paying interest (can't really change that)
+- ~$4T goes to mandatory spending (e.g. Social Security, Medicare -- needs legislation to change)
+- ~$1.8T is discretionary spending (this is what the president can actually influence)
 
-The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the impact of these over 4 years at $280B, bringing our total to:
+Over a 4-year term, discretionary spending is about $7.2 trillion. But within this bucket, candidates don't fully differ -- both will still fund the military, run agencies, and pay for programs. So what we care about are the marginal differences. If our preferred candidate is 10% more effective with this money, that gives us $720B.
+
+The president also influences via legislation, Supreme Court appointments, foreign policy, etc. which are hard to quantify. Let's conveniently estimate the 4-year impact of all these other factors at $280 billion, giving us:
 $$\Delta V \approx 1T$$
 
-### Confidence factor
+### Confidence discount
 Since most voters aren't 100% confident in their vote, we should also apply a confidence discount factor. Even if you do feel 100% confident in your vote, policies can have second-order effects that are hard to predict [^5], so you should still discount this number. Applying a moderate \(c=0.5\) gives us:
 $$\Delta V \approx 500B$$
 
-## Applying this to the 2024 US Presidential Election
+## Putting it all together: 2024 election results
 Let's apply this framework to the 2024 presidential race. We used historical state-level polling margins and assumed a 5% polling error for each state and a \(\Delta V\) of 500B, then ran 100 million simulations[^6] to estimate \(P(\text{state flips election})\) for each state. Here are the results:
 {{< darklight light="/plots/voting_map_light_mode.png" dark="/plots/voting_map_dark_mode.png" alt="Voting Map" >}}
 <div class="giant-table">
@@ -227,9 +232,13 @@ Let's apply this framework to the 2024 presidential race. We used historical sta
 </table>
 </div>
 
-# Analysis
-## Voting EV
-The EV of a vote ranges from $84 (Idaho) to $96k (Alaska). A vote in Alaska is ~1000 times more valuable than a vote in Idaho (regardless of the value one assigns to the election itself). The chance of a vote swinging the entire election ranges from ~1 in 6 billion in Idaho to ~1 in 5 million in Alaska.
+# What this actually means
+## Your vote's value ranges from $84 to $96k
+If you're in Idaho, your vote is worth about $84. If you're in Alaska, it's worth about $96k.
+
+That's a 1000x difference, regardless of the the \(\Delta V\) you assign to the election.
+
+The chance of a vote swinging the entire election ranges from 1 in 6 billion (Idaho) to 1 in 5 million (Alaska).
 
 Oh, and then there is DC, where a voter has an astronomically small \(3.02\times 10^{-22}\) chance of swinging an election. If a DC voter had these chances and voted in a separate election for every single grain of sand on Earth, they would only have about a 0.2% chance of flipping a single election.
 
